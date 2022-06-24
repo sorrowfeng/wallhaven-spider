@@ -14,10 +14,20 @@
    <string>wallhaven爬虫</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+   <item row="1" column="0">
     <widget class="QTextEdit" name="textEditInfo"/>
    </item>
    <item row="2" column="0">
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
+      <number>0</number>
+     </property>
+     <property name="textVisible">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="label">
@@ -37,7 +47,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btnConfirm_2">
+      <widget class="QPushButton" name="btnCancel">
        <property name="text">
         <string>停止</string>
        </property>
@@ -45,15 +55,29 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
-    <widget class="QProgressBar" name="progressBar">
-     <property name="value">
-      <number>0</number>
-     </property>
-     <property name="textVisible">
-      <bool>true</bool>
-     </property>
-    </widget>
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QPushButton" name="btnSettings">
+       <property name="text">
+        <string>设置</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
