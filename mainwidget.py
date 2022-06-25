@@ -9,6 +9,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QDialog
+from PyQt5.QtCore import QSettings
 
 import settings
 import spider_thread
@@ -61,6 +62,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.instance = mainwidget
 
         self.initData()
+        self.initTextView()
 
     def retranslateUi(self, mainwidget):
         _translate = QtCore.QCoreApplication.translate
@@ -77,10 +79,17 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.textEditInfo.textChanged.connect(self.scrollToEnd)
         self.textEditInfo.setReadOnly(True)
         self.txtWord.setFocus()
-        self.txtWord.editingFinished.connect(self.startSpider)
         self.btnCancel.setEnabled(False)
         self.btnSettings.clicked.connect(self.openSettingsDialog)
+        self.textEditInfo.document().setMaximumBlockCount(100) # 设置最大行数
 
+        set = QSettings('config.ini',QSettings.IniFormat)
+        self.downloadDir = set.value('path', './download')
+
+    def initTextView(self):
+        self.textEditInfo.append('\n\n\n请输入搜索关键词后，点击开始下载')
+        self.textEditInfo.append('输入toplist下载热门榜单内容')
+        self.textEditInfo.append('仅支持英文关键词\n\n\n')
 
     def openSettingsDialog(self):
         Settings = QDialog(self.instance)
@@ -105,21 +114,28 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.textEditInfo.moveCursor(QtGui.QTextCursor.MoveOperation.End)
 
     def startSpider(self):
+        word = self.txtWord.text()
+        if len(word) == 0:
+            self.addText('关键词为空')
+            return
         self.updateProgress(0)
         self.btnConfirm.setEnabled(False)
         self.btnCancel.setEnabled(True)
-        word = self.txtWord.text()
         self.sp = spider_thread.Spider()
         self.sp.set_message(self.addText)
         self.sp.set_progress(self.updateProgress)
-        self.sp.set_finish(self.stopSpider)
+        self.sp.set_finish(self.restartView)
         self.sp.set_word(word)
         self.sp.set_download_path(self.downloadDir)
         self.sp.start()
 
     def stopSpider(self):
         self.sp.exit = True
+        self.restartView()
+
+    def restartView(self):
         self.updateProgress(0)
         self.btnConfirm.setEnabled(True)
         self.btnCancel.setEnabled(False)
+        self.initTextView()
 
